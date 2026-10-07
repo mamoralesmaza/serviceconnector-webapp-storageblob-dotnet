@@ -9,10 +9,33 @@ namespace WebStorageSample
 {
     public class StorageHelper
     {
+        // Método auxiliar para construir las credenciales de forma segura
+        private static DefaultAzureCredential GetCredential()
+        {
+            return new DefaultAzureCredential(new DefaultAzureCredentialOptions
+            {
+                // Evita que busque la IP de Managed Identity (169.254.169.254) cuando estás corriendo la app localmente
+                ExcludeManagedIdentityCredential = true 
+            });
+        }
+
+        // Método auxiliar para validar el Endpoint
+        private static string EnsureEndpoint(string containerEndpoint)
+        {
+            if (string.IsNullOrWhiteSpace(containerEndpoint))
+            {
+                // Valor de respaldo para tu entorno local en caso de que launchSettings.json no lea la variable
+                return "https://martinurl.blob.core.windows.net";
+            }
+            return containerEndpoint;
+        }
+
         static public async Task UploadBlob(string containerEndpoint, string containerName, string blobName, string blobContents)
         {
+            containerEndpoint = EnsureEndpoint(containerEndpoint);
             var blobContainerUri = new Uri(new Uri(containerEndpoint), containerName);
-            BlobContainerClient containerClient = new BlobContainerClient(blobContainerUri, new DefaultAzureCredential());
+            
+            BlobContainerClient containerClient = new BlobContainerClient(blobContainerUri, GetCredential());
 
             try
             {
@@ -29,16 +52,18 @@ namespace WebStorageSample
                     await blobClient.UploadAsync(stream, overwrite: true);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw; // Conserva el Stack Trace original (corrige advertencia CA2200)
             }
         }
 
         static public async Task<string> GetBlob(string containerEndpoint, string containerName, string blobName)
         {
+            containerEndpoint = EnsureEndpoint(containerEndpoint);
             var blobContainerUri = new Uri(new Uri(containerEndpoint), containerName);
-            BlobContainerClient containerClient = new BlobContainerClient(blobContainerUri, new DefaultAzureCredential());
+            
+            BlobContainerClient containerClient = new BlobContainerClient(blobContainerUri, GetCredential());
 
             try
             {
@@ -61,9 +86,9 @@ namespace WebStorageSample
                 }
                 return "";
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                throw; // Conserva el Stack Trace original (corrige advertencia CA2200)
             }
         }
     }
