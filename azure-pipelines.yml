@@ -7,7 +7,7 @@ variables:
   buildConfiguration: 'Release'
   dotnetVersion: '9.x'
   
-  azureSubscription: 'mia-connection'
+  azureSubscription: 'connection'
   appName: 'miaazurestorage2'
 
 
