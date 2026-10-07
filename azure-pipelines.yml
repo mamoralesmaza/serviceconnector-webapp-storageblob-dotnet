@@ -6,7 +6,7 @@ pool:
 variables:
   buildConfiguration: 'Release'
   dotnetVersion: '9.x'
-  azureSubscription: 'NOMBRE-EXACTO-DE-TU-SERVICE-CONNECTION'
+  azureSubscription: 'mia-connection'
   appName: 'miaazurestorage2'
 
 
