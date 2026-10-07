@@ -6,8 +6,9 @@ pool:
 variables:
   buildConfiguration: 'Release'
   dotnetVersion: '9.x'
-azureSubscription: 'ba817075-a2cc-4f40-9305-1b122060e9fd'
-  appName: 'miaazurestorage2'
+  azureSubscription: 'NOMBRE-DE-TU-SERVICE-CONNECTION'
+  appName: 'NOMBRE-DE-TU-APP-SERVICE'
+
 
 steps:
 
