@@ -19,12 +19,16 @@ namespace WebStorageSample.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        // Se cambia 'public void OnGet()' a 'public async Task OnGetAsync()'
+        public async Task OnGetAsync()
         {
             string content = string.Format("Hello Service Connector! UTC Now: {0}.", DateTimeOffset.UtcNow.ToString());
 
-            StorageHelper.UploadBlob(Environment.GetEnvironmentVariable(Const.ENDPOINT_ENV_KEY), Const.CONTAINER_NAME, Const.BLOB_NAME, content).Wait();
-            DisplayWords = StorageHelper.GetBlob(Environment.GetEnvironmentVariable(Const.ENDPOINT_ENV_KEY), Const.CONTAINER_NAME, Const.BLOB_NAME).Result;
+            string endpoint = Environment.GetEnvironmentVariable(Const.ENDPOINT_ENV_KEY);
+
+            // Reemplazo de .Wait() y .Result por await
+            await StorageHelper.UploadBlob(endpoint, Const.CONTAINER_NAME, Const.BLOB_NAME, content);
+            DisplayWords = await StorageHelper.GetBlob(endpoint, Const.CONTAINER_NAME, Const.BLOB_NAME);
         }
     }
 }
