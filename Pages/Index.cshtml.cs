@@ -22,11 +22,14 @@ namespace WebStorageSample.Pages
         // Se cambia 'public void OnGet()' a 'public async Task OnGetAsync()'
         public async Task OnGetAsync()
         {
-            string content = string.Format("Hello Service Connector! UTC Now: {0}.", DateTimeOffset.UtcNow.ToString());
-
             string endpoint = Environment.GetEnvironmentVariable(Const.ENDPOINT_ENV_KEY);
+            
+            if (string.IsNullOrEmpty(endpoint))
+            {
+                throw new Exception($"La variable de entorno '{Const.ENDPOINT_ENV_KEY}' no está configurada en Azure.");
+            }
 
-            // Reemplazo de .Wait() y .Result por await
+            string content = string.Format("Hello Service Connector! UTC Now: {0}.", DateTimeOffset.UtcNow.ToString());
             await StorageHelper.UploadBlob(endpoint, Const.CONTAINER_NAME, Const.BLOB_NAME, content);
             DisplayWords = await StorageHelper.GetBlob(endpoint, Const.CONTAINER_NAME, Const.BLOB_NAME);
         }
